@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class CouponEvent {
     @Id
@@ -14,4 +16,8 @@ public class CouponEvent {
     private String name;
 
     private int totalStock;     // 총 재고
+
+    private LocalDateTime startAt;
+
+    private LocalDateTime endAt;
 }
