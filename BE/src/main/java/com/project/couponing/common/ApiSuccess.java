@@ -14,4 +14,8 @@ public class ApiSuccess<T> {
     public static <T> ApiSuccess<T> of(HttpStatus status, String message, T data) {
         return new ApiSuccess<>(status.value(), message, data);
     }
+
+    public static ApiSuccess<Void> ok(String message) {
+        return new ApiSuccess<>(HttpStatus.OK.value(), message, null);
+    }
 }
