@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CouponIssueService {
-    private final CouponIssueRepository couponIssueRepository;
     private final CouponEventRepository couponEventRepository;
     private final CouponIssueJdbcRepository couponIssueJdbcRepository;
+    private final RedisService redisService;
 
     private final UserService userService;
 
@@ -36,6 +36,11 @@ public class CouponIssueService {
             throw new ApiException(ApiErrorCode.INVALID_REQUEST);
         }
 
+        // 재고 체크
+        if (!redisService.decreaseStock(eventId)) {
+            throw new ApiException(ApiErrorCode.NO_STOCK);
+        }
+
         try {
             couponIssueJdbcRepository.insertIssue(userId, eventId, requestId);
         } catch (DuplicateKeyException e) {
@@ -43,8 +48,6 @@ public class CouponIssueService {
             // 둘 다 이미 처리된 요청으로 봄
             throw new ApiException(ApiErrorCode.ALREADY_ISSUED);
         }
-
-        System.out.println(requestId);
 
         return ResponseEntity.ok(ApiSuccess.ok("쿠폰 발급 성공"));
     }
