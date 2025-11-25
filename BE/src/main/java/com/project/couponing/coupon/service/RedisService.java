@@ -22,6 +22,8 @@ public class RedisService {
     }
 
     // 재고차감
+    // redis는 한 번에 한 명만 감소시키도록 알아서 처리해줌
+    // 재고 이상으로 발급 되는 경우를 막기 위해 사용
     public boolean decreaseStock(Long eventId) {
         Long result = redisTemplate.opsForValue().decrement(stockKey(eventId));
 

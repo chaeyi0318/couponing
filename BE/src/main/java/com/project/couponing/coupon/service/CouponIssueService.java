@@ -31,12 +31,14 @@ public class CouponIssueService {
         userService.validateUserExists(userId);
 
         // 멱등키 사용해서 쿠폰 발급
-        // 멱등키 검증
+        // 멱등키 검증 (같은 요청이 들어와도 한 번만 처리하기 위한 단계)
+        // redis에서는 재고만 관리하고 어떤 요청을 처리했는 지 기록하는 부분이 없기 때문에 DB에서 체크함
         if (requestId == null || requestId.isEmpty()) {
             throw new ApiException(ApiErrorCode.INVALID_REQUEST);
         }
 
         // 재고 체크
+        // 재고 하나 감소
         if (!redisService.decreaseStock(eventId)) {
             throw new ApiException(ApiErrorCode.NO_STOCK);
         }
